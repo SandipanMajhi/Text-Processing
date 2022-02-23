@@ -47,16 +47,16 @@ class Trie{
 
     void insert(string key){
         Node *cur = this -> root;
-
-        for(auto c : key){
-            int index = c - '\0';
-            if(!cur -> children[index])
-                cur -> children[index] = new Node();
-            cur->children[index] -> count++;
-            cur = cur -> children[index];
-        }
-
-        cur -> isEnd = 1;
+        if(!word_search(key)){
+            for(auto c : key){
+                int index = c - '\0';
+                if(!cur -> children[index])
+                    cur -> children[index] = new Node();
+                cur->children[index] -> count++;
+                cur = cur -> children[index];
+            }
+            cur -> isEnd = 1;
+        }        
     }
 
     int word_search(string key){
@@ -129,6 +129,42 @@ class Trie{
             cout << "Not a match" << endl;
         }
     }
+
+    void traverse_maxend(Node *cur){
+        if(cur  -> isEnd){
+            cout << this -> sg;
+            for (auto c : this -> inlist)
+                cout << (char) (c + '\0') ;
+            cout << "\n";
+        }
+
+        int maxcount = 0, maxind = -1;
+        Node *maxcur;
+
+        for(int ind = 0 ; ind  < alp ; ind++){
+            if(cur -> children[ind] && cur -> children[ind] -> count > maxcount){
+                maxcount = cur -> children[ind] -> count;
+                maxcur = cur -> children[ind];
+                maxind = ind;
+            }
+        }
+        if(maxind != -1){
+            this -> inlist.push_back(maxind);
+            traverse_maxend(maxcur);
+            this -> inlist.pop_back();
+        }
+
+    }
+
+    void best_suggest(string key){
+        Node *cur = search(key);
+        if(cur != nullptr){
+            this -> sg = key;
+            traverse_maxend(cur);
+        }else
+            cout << "No Suitable Match" << endl;
+    }
+    
 };
 
 
@@ -158,12 +194,15 @@ int main(){
         for(auto c : l)
             t.insert(c);
     }
-
-    t.printTrie(t.root);
-
     string word;
+    cout << "Type some string : " << endl;
+    cin >> word;
 
-    
+    cout << "Probable auto completions : " << endl;
+    t.suggestion(word);
+
+    cout << "Best auto completion by frequency : " << endl;
+    t.best_suggest(word);
 
     return 0;
 }
