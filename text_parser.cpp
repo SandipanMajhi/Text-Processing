@@ -18,7 +18,7 @@
 
 using namespace std;
 
-#define alp 256
+#define alp 128
 
 class Node{
     public:
@@ -164,6 +164,27 @@ class Trie{
         }else
             cout << "No Suitable Match" << endl;
     }
+
+    Node* delete_after_nonalphabets(Node *node){
+        for(int i = 0; i<alp; i++){
+            if(node -> children[i]){
+                node -> children[i] = delete_after_nonalphabets(node -> children[i]);
+            }
+        }
+        return nullptr;
+    }
+
+    void clean_vocab(Node *cur){
+        for(int ind = 0; ind  < alp ; ind++){
+            if(cur -> children[ind] ){
+                if(ind >= 65 && ind <= 90 || ind >= 97 && ind <= 122){
+                    clean_vocab(cur -> children[ind]);
+                }else{
+                    cur -> children[ind] = delete_after_nonalphabets(cur -> children[ind]);
+                }
+            }
+        }
+    }
     
 };
 
@@ -195,14 +216,21 @@ int main(){
             t.insert(c);
     }
     string word;
-    cout << "Type some string : " << endl;
-    cin >> word;
+    // cout << "Type some string : " << endl;
+    // cin >> word;
 
-    cout << "Probable auto completions : " << endl;
-    t.suggestion(word);
+    // cout << "Probable auto completions : " << endl;
+    // t.suggestion(word);
 
-    cout << "Best auto completion by frequency : " << endl;
-    t.best_suggest(word);
+    // cout << "Best auto completion by frequency : " << endl;
+    // t.best_suggest(word);
+
+    cout << "The complete vocabulary before cleaning : " << endl;
+    t.printTrie(t.root);
+
+    cout << "The vocabulary after cleaning : " << endl;
+    t.clean_vocab(t.root);
+    t.printTrie(t.root); 
 
     return 0;
 }
