@@ -1,12 +1,7 @@
 /**
- * @file text_parser.cpp
- * @author your name (you@domain.com)
- * @brief 
- * Text Parsing and Suggestion model
- * @version 0.1
- * @date 2022-02-23
+ * Update Feb 24, 2022 : The program attempts to clean the vocabulary of unnnecessary non english 
+ * alphabets from the vocabulary.
  * 
- * @copyright Copyright (c) 2022
  * 
  */
 
